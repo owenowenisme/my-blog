@@ -1,0 +1,80 @@
+nav:
+  Home: /
+  About: /about/
+  Articles: /archives/
+  Crypto: /tags/crypto/
+  Tech: /tags/tech
+  Life: /tags/life/
+  Drama: /tags/drama
+  Books: /tags/books
+  Code: /tags/code
+  
+  Projects: http://github.com/owenowenisme
+
+projects_url: http://github.com/owenowenisme
+
+customize:
+    gravatar:
+        email: 
+    logo:
+        enabled: true
+        width: 50
+        height: 50
+        url: /images/9 tsai.png
+        gravatar: false
+    favicon: 
+      # eg. generate with http://realfavicongenerator.net/
+      desktop:
+        url: /images/9 tsai.ico
+        gravatar: false
+      android:
+        url: /images/9 tsai.png
+        gravator: false
+      apple:
+        url: /images/9 tsai.png
+        gravator: false
+    social_links:
+        twitter: https://twitter.com/Owenn_Lin
+        facebook: https://www.facebook.com/profile.php?id=100008987139699
+        linkedin: https://www.linkedin.com/in/owen-lin-7b0455213/
+        instagram: https://www.instagram.com/zwzibzj/
+    post_count: 10
+    highlight: lightcode
+
+# keept it like this to add the root path (probably a bug)
+root: ..
+
+solar:
+    # factor between 0 (fast), 1(normal), 2(very slow)  
+    speed: 0.5
+    sun_image: /images/me.jpg
+    earth_image: /images/eth.png
+    jupiter_image: /images/btc.png
+    mars_image: /images/tether.png
+    mercury_image: /images/avax.png
+    shadow_image: /images/shadow.png
+    venus_image: /images/luna.png
+#sdsdsdsdsd
+# RSS
+rss: true
+
+# Plugins
+plugins:
+    disqus_shortname: owenowenisme
+    google_analytics: G-NC2JGY6MHV
+
+# Miscellaneous
+miscellaneous:
+    open_graph: # see http://ogp.me
+        fb_app_id:
+        fb_admins:
+        twitter_id:
+        google_plus:
+
+firestore:
+  enable: true
+  collection: articles # Required, a string collection name to access firestore database
+  apiKey: AIzaSyCy57q6qptVbJuVoiHIm9wCfWEl1_lcffs # Required
+  projectId: owen-s-daily # Required
+  bluebird: false # Enable this if you want to include bluebird 3.5.1 (core version) Promise polyfill
+
