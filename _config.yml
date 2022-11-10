@@ -3,6 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
+
 title: Owen's Daily 
 subtitle: or maybe Weekly
 description: 雖然叫Daily不過可能會是weekly甚至monthly，我會在這邊發表一些幣圈知識新聞等等，或是一些我喜歡看的劇，還有自己的生活。 (P.S. 我是不是應該把頁首動畫的Luna拿掉阿，現在大家看到他就討厭)
@@ -49,7 +50,7 @@ future: true
 highlight:
   enable: true
   line_number: true
-  first_line_number: 'inline' # | 'always1'
+  first_line_number: '1' # | 'always1'
   auto_detect: false
   tab_replace: ''
   wrap: true
@@ -102,6 +103,7 @@ ignore:
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
 theme: solar-theme-hexo-master
+
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment

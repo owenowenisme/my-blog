@@ -39,7 +39,9 @@ customize:
         linkedin: https://www.linkedin.com/in/owen-lin-7b0455213/
         instagram: https://www.instagram.com/zwzibzj/
     post_count: 10
-    highlight: lightcode
+    highlight: obsidian
+      #line_number: true
+      #enable: true
 
 # keept it like this to add the root path (probably a bug)
 root: ..
@@ -60,8 +62,12 @@ rss: true
 
 # Plugins
 plugins:
-    disqus_shortname: owenowenisme
+    #disqus_shortname: owenowenisme
     google_analytics: G-NC2JGY6MHV
+    
+
+
+    
 
 # Miscellaneous
 miscellaneous:
