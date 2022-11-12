@@ -8,6 +8,7 @@ nav:
   Drama: /tags/drama
   Books: /tags/books
   Code: /tags/code
+  Oflix: https://owenspace.owenowenisme.com/
   
   Projects: http://github.com/owenowenisme
 
@@ -49,9 +50,9 @@ root: ..
 solar:
     # factor between 0 (fast), 1(normal), 2(very slow)  
     speed: 0.5
-    sun_image: /images/me.jpg
+    sun_image: /images/Sharingan_Triple.png
     earth_image: /images/eth.png
-    jupiter_image: /images/btc.png
+    jupiter_image: /images/bitcoin-btc-logo.png
     mars_image: /images/tether.png
     mercury_image: /images/avax.png
     shadow_image: /images/shadow.png
@@ -65,7 +66,7 @@ plugins:
     #disqus_shortname: owenowenisme
     google_analytics: G-NC2JGY6MHV
     
-
+self_search: true
 
     
 

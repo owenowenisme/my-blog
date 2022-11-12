@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="前言其實一開始是為了要看國外的netflix，(我超想看The Office)，不過做完了之後結果被Netflix擋下來，要知道netflix有很多防範VPN的措施，而我不想要花錢買sharkvpn之類的東西，而且自己做一個比較好玩，雖然netflix不能用，不過其他大部分的國外網站還是能用，所以大家還是可以動手做做看，而且還是免費的~  申請Amazon AWS帳號 進入Amazon AWS註冊">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何在免費主機上架設私人VPN?">
+<meta property="og:url" content="https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/index.html">
+<meta property="og:site_name" content="Owen&#39;s Daily">
+<meta property="og:description" content="前言其實一開始是為了要看國外的netflix，(我超想看The Office)，不過做完了之後結果被Netflix擋下來，要知道netflix有很多防範VPN的措施，而我不想要花錢買sharkvpn之類的東西，而且自己做一個比較好玩，雖然netflix不能用，不過其他大部分的國外網站還是能用，所以大家還是可以動手做做看，而且還是免費的~  申請Amazon AWS帳號 進入Amazon AWS註冊">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/math.jpg">
+<meta property="og:image" content="https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/register.png">
+<meta property="og:image" content="https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/EC2.png">
+<meta property="og:image" content="https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/ubuntu_image.png">
+<meta property="og:image" content="https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/t2micro.png">
+<meta property="og:image" content="https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/key_generate.png">
+<meta property="og:image" content="https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/rules.png">
+<meta property="og:image" content="https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/ipv4.png">
+<meta property="og:image" content="https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/vpn.png">
+<meta property="article:published_time" content="2022-06-14T15:34:26.000Z">
+<meta property="article:modified_time" content="2022-11-08T16:57:39.701Z">
+<meta property="article:tag" content="tech">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/math.jpg">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/9%20tsai.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/9%20tsai.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/9%20tsai.png">
+          
+        
+    
+    <!-- title -->
+    <title>如何在免費主機上架設私人VPN?</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+
+    
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="Owen&#39;s Daily" type="application/atom+xml" />
+    
+    <!-- jquery -->
+    
+<script src="/lib/jquery/jquery.min.js"></script>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><style type="text/css">
+.spoiler {
+  display: inline-flex;
+}
+p.spoiler {
+  display: flex;
+}
+.spoiler a {
+  pointer-events: none;
+}
+.spoiler-blur, .spoiler-blur > * {
+  transition: text-shadow .5s ease;
+}
+.spoiler .spoiler-blur, .spoiler .spoiler-blur > * {
+  color: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0);
+  text-shadow: 0 0 10px grey;
+  cursor: pointer;
+}
+.spoiler .spoiler-blur:hover, .spoiler .spoiler-blur:hover > * {
+  text-shadow: 0 0 5px grey;
+}
+.spoiler-box, .spoiler-box > * {
+  transition: color .5s ease,
+  background-color .5s ease;
+}
+.spoiler .spoiler-box, .spoiler .spoiler-box > * {
+  color: black;
+  background-color: black;
+  text-shadow: none;
+}</style><meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">Owen&#39;s Daily</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/tags/crypto/">Crypto</a></li>
+         
+          <li><a href="/tags/tech">Tech</a></li>
+         
+          <li><a href="/tags/life/">Life</a></li>
+         
+          <li><a href="/tags/drama">Drama</a></li>
+         
+          <li><a href="/tags/books">Books</a></li>
+         
+          <li><a href="/tags/code">Code</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://owenspace.owenowenisme.com/">Oflix</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/owenowenisme">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2022/07/03/%E6%9A%AB%E5%AD%98%E5%8D%80/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="/2022/06/04/%E4%BB%A5%E5%A4%AA%E5%A5%87%E8%A5%B2%20The%20Infinite%20Machine/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/&text=如何在免費主機上架設私人VPN?"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/&title=如何在免費主機上架設私人VPN?"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/&is_video=false&description=如何在免費主機上架設私人VPN?"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=如何在免費主機上架設私人VPN?&body=Check out this article: https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/&title=如何在免費主機上架設私人VPN?"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/&title=如何在免費主機上架設私人VPN?"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/&title=如何在免費主機上架設私人VPN?"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/&title=如何在免費主機上架設私人VPN?"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/&name=如何在免費主機上架設私人VPN?&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.1.</span> <span class="toc-text">申請Amazon AWS帳號</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.2.</span> <span class="toc-text">啟用虛擬主機服務</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.3.</span> <span class="toc-text">進入虛擬主機</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        如何在免費主機上架設私人VPN?
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Owen's Daily</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2022-06-14T15:34:26.000Z" itemprop="datePublished">2022-06-14</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/tech/" rel="tag">tech</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>其實一開始是為了要看國外的netflix，(我超想看The Office)，不過做完了之後結果被Netflix擋下來，要知道netflix有很多防範VPN的措施，而我不想要花錢買sharkvpn之類的東西，而且自己做一個比較好玩，雖然netflix不能用，不過其他大部分的國外網站還是能用，所以大家還是可以動手做做看，而且還是免費的~<br><img src="/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/math.jpg"></p>
+<hr>
+<h2><font size="5" color="#58a548">申請Amazon AWS帳號</font></h2>
+進入Amazon AWS註冊頁面並填入email等資料，之後會要求你輸入信用卡資料，因為AWS服務並非所有都是免費的，但基本上不用太擔心會被亂收錢。
+
+<p><img src="/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/register.png"></p>
+<h2><font size="5" color="#58a548">啟用虛擬主機服務</font></h2>
+在控制台點擊EC2，進入之後在左側選單，點擊"執行個體"，然後在右上角點擊"啟動新執行個體"。
+
+<p><img src="/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/EC2.png"></p>
+<p>名稱就隨便取，映像檔就選ubuntu 20.04。</p>
+<p><img src="/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/ubuntu_image.png"></p>
+<p>執行個體選t2.mirco，因為這個是免費方案裡面最好的，但也足以應付vpn。</p>
+<p><img src="/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/t2micro.png"></p>
+<p>再來就是選金鑰對，aws比較注重安全性所以只能用他給你的私鑰登入主機，不過有點麻煩就是了。金鑰對類型選RSA，私有金鑰檔案格式選.ppk。這時會下載一個檔案，請把它存好。</p>
+<p><img src="/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/key_generate.png"></p>
+<p>最後在網路設定加入新規則，類型選UDP，來源類型選隨處。</p>
+<p><img src="/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/rules.png"></p>
+<p>到這裡，虛擬主機的設定就完成了，點選啟動執行個體。</p>
+<h2><font size="5" color="#58a548">進入虛擬主機</font></h2>
+
+<p>請先下載putty，putty是一款強大的軟體，若是要用私鑰登入，putty非常適合。<br><a target="_blank" rel="noopener" href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html">下載處</a></p>
+<p>安裝後，先回到AWS的頁面查看剛剛所創建的虛擬主機IP地址複製起來並貼到putty的ip位置欄。</p>
+<p><img src="/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/ipv4.png"></p>
+<p>點開putty左側選單的SSH再點選AUTH，點開private key的按鈕並開啟剛剛獲得的.ppk檔。</p>
+<p>此時會出現一個終端機，請以ubuntu為名稱登入。</p>
+<p>恭喜你成功進入你的主機!但不覺得如果每次登入都要有私鑰會非常麻煩嗎?因此我們可以修改root密碼。</p>
+<p>輸入<code>sudo passwd root</code>。<br>輸入你要的密碼之後就可以以root身分登入了。<br>輸入<code>su -</code>。之後輸入剛剛設定的密碼就可以以root身分登入了。</p>
+<p>由於主機中的套件不一定是最新的，因此我們要先更新。輸入<code>sudo apt-get update &amp;&amp; sudo apt-get upgrade</code>。</p>
+<p>之後載入vpn腳本。<br>輸入 <code>curl -O https://raw.githubusercontent.com/angristan/openvpn-install/master/openvpn-install.sh</code>。<br>輸入<code>chmod +x openvpn-install.sh</code>。<br>輸入<code>./openvpn-install.sh</code>。<br>之後會出現一連串的configuration，基本上照預設的就ok了，就一直enter直到出現client name。<br>client name 輸入你想取的名稱就可以了。<br>這時輸入ls若有出現 使用者名稱.ovpn<br>輸入<code>cp owenowenserver.ovpn /home/ubuntu</code>。<br>最後，開啟任意ftp軟體把ovpn檔存到自己的電腦，下載open vpn connect 並把ovpn檔導入就可以使用了!<br><img src="/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/vpn.png"></p>
+<p>不過亞馬遜有每月100gb的限制小心不要超過，不然會被收費。</p>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/tags/crypto/">Crypto</a></li>
+         
+          <li><a href="/tags/tech">Tech</a></li>
+         
+          <li><a href="/tags/life/">Life</a></li>
+         
+          <li><a href="/tags/drama">Drama</a></li>
+         
+          <li><a href="/tags/books">Books</a></li>
+         
+          <li><a href="/tags/code">Code</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://owenspace.owenowenisme.com/">Oflix</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/owenowenisme">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.1.</span> <span class="toc-text">申請Amazon AWS帳號</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.2.</span> <span class="toc-text">啟用虛擬主機服務</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.3.</span> <span class="toc-text">進入虛擬主機</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/&text=如何在免費主機上架設私人VPN?"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/&title=如何在免費主機上架設私人VPN?"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/&is_video=false&description=如何在免費主機上架設私人VPN?"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=如何在免費主機上架設私人VPN?&body=Check out this article: https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/&title=如何在免費主機上架設私人VPN?"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/&title=如何在免費主機上架設私人VPN?"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/&title=如何在免費主機上架設私人VPN?"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/&title=如何在免費主機上架設私人VPN?"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://owenowenisme.com/2022/06/14/%E5%A6%82%E4%BD%95%E5%9C%A8%E5%85%8D%E8%B2%BB%E4%B8%BB%E6%A9%9F%E4%B8%8A%E6%9E%B6%E8%A8%AD%E7%A7%81%E4%BA%BAVPN/&name=如何在免費主機上架設私人VPN?&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  
+
+  <div class="footer-left">
+    Copyright &copy; 2022 Owen&#39;s Daily
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/tags/crypto/">Crypto</a></li>
+         
+          <li><a href="/tags/tech">Tech</a></li>
+         
+          <li><a href="/tags/life/">Life</a></li>
+         
+          <li><a href="/tags/drama">Drama</a></li>
+         
+          <li><a href="/tags/books">Books</a></li>
+         
+          <li><a href="/tags/code">Code</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://owenspace.owenowenisme.com/">Oflix</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/owenowenisme">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- Google Analytics -->
+
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'G-NC2JGY6MHV', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+<!-- Disqus Comments -->
+
+
+    </div>
+    
+</body>
+</html>
