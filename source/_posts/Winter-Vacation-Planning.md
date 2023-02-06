@@ -20,8 +20,11 @@ tags: life
 ### Bujo! - Finish frontend
 同樣也是一個很大的挑戰，因為這是我第一次用flutter這個框架，更不用說我以前也沒寫過JS，第一個專案就要做如此困難的東西，我自己也不確定自己到底有沒有辦法，其實我寫這篇文章的當下，我對整個Project的組織還是感覺很模糊，但我唯一能做的就是堅持下去吧？是說我其實覺得蠻有趣的啦，雖然我好像寫的很痛苦一樣XD。
 (同上，監督我！)[🔗Link](https://github.com/owenowenisme/Bujo-)
+
 (2/6 update)
-今天剛把apk release 出去了，雖然還有一些setting與account的頁面還沒做但frontend大致算是完成了，之後可以開始work on backend了！以後的開發紀錄會寫在這裡[Bujo Developing Log](https://owenowenisme.com/2023/02/08/Bujo-Developing-Log/)
+今天剛把apk release 出去了，雖然還有一些setting與account的頁面還沒做但frontend大致算是完成了，之後可以開始work on backend了！以後的開發紀錄會寫在這裡
+
+[Bujo Developing Log](https://owenowenisme.com/2023/02/06/Bujo-Developing-Log/)
 ### Jazz 
 這部分好像沒什麼好講的，就是單純想把一些曲子練好吧，我的和弦的基礎不夠好，也沒有什麼鋼琴底子，恩恩也只能再加油，選的曲子是已經很喜歡聽一段時間的，分別一首是Swing，一首是Bossanova。順便貼出我其他還想練的：
 - It don’t mean a thing 
